@@ -167,6 +167,19 @@ double Circle::area() const { return 3.14159 * radius * radius; }
 g++ main.cpp circle.cpp -o program
 ```
 
+### Достъпване на член данни през указател към клас
+
+Когато имаме указател към обект от клас, използваме `->` за достъп до член-данни и методи:
+
+```cpp
+Circle* c = new Circle(5.0, 0.0, 0.0);
+std::cout << "Radius: " << c->getRadius() << std::endl; // Use -> to call method on pointer
+// this is equivallent to
+// std::cout << "Radius: " << (*c).getRadius() << std::endl; // Dereference pointer, then call method
+```
+
+Синтактичната захар е създадена за удобство. Ще се използва много често оттук нататък.
+
 ### Член-данни не могат да бъдат инстанции от собствения клас
 
 Когато компилаторът среща декларация на клас, той трябва да знае **размера** на всички член-данни. Ако клас съдържа себе си, размерът е безкраен:
