@@ -255,7 +255,7 @@ class Student {
 
 Ако класът **трябва** да управлява ресурс директно (напр. `new`/`delete`, файлове, мрежови сокети) и деструкторът се грижи за освобождаването, трябва да дефинирате четири функции:
 
-- **Конструктоп по подразбиране**
+- **Конструктор по подразбиране**
 - **Деструктор**
 - **Конструктор за копиране**
 - **Оператор за копиращо присвояване**
@@ -291,6 +291,10 @@ double divide(double a, double b) {
 int main() {
     try {
         double result = divide(10.0, 0.0);
+    }
+    catch (const std::bad_alloc& e) { // failed new
+        // e.what() returns the error message
+        std::cerr << "Error: " << e.what() << std::endl;
     }
     catch (const std::invalid_argument& e) {
         // e.what() returns the error message
