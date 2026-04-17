@@ -12,7 +12,7 @@
 | 6 | Класове. ООП принципи. SOLID. RAII. Конструктори и деструктори. | [link](https://github.com/Stelllarce/Object-Oriented-Programming-IS-2026/tree/main/Week_06) |
 | 7 | Жизнен цикъл на обектите. Изключения. Голяма четворка. | [link](https://github.com/Stelllarce/Object-Oriented-Programming-IS-2026/tree/main/Week_07) |
 | 8 | Семантика на преместване. Статични член данни и функции, приятелски класове и приятелски функции, контрол над създаването на обекти, шаблони за дизайн | [link](https://github.com/Stelllarce/Object-Oriented-Programming-IS-2026/tree/main/Week_08) |
-| 9 |  |  |
+| 9 | Предефиниране на оператори | [link](https://github.com/Stelllarce/Object-Oriented-Programming-IS-2026/tree/main/Week_09) |
 | 10 |  |  |
 | 11 |  |  |
 | 12 |  |  |
