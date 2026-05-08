@@ -13,14 +13,16 @@
 | 7 | Жизнен цикъл на обектите. Изключения. Голяма четворка. | [link](https://github.com/Stelllarce/Object-Oriented-Programming-IS-2026/tree/main/Week_07) |
 | 8 | Семантика на преместване. Статични член данни и функции, приятелски класове и приятелски функции, контрол над създаването на обекти, шаблони за дизайн | [link](https://github.com/Stelllarce/Object-Oriented-Programming-IS-2026/tree/main/Week_08) |
 | 9 | Предефиниране на оператори | [link](https://github.com/Stelllarce/Object-Oriented-Programming-IS-2026/tree/main/Week_09) |
-| 10 |  |  |
-| 11 |  |  |
-| 12 |  |  |
+| 10 | Предефиниране на каст оператори, по-специални оператори | [link](https://github.com/Stelllarce/Object-Oriented-Programming-IS-2026/tree/main/Week_10) |
+| 11 | Наследяване - основни идеи| [link](https://github.com/Stelllarce/Object-Oriented-Programming-IS-2026/tree/main/Week_11) |
+| 12 | Виртуални методи и полиморфизъм | [link](https://github.com/Stelllarce/Object-Oriented-Programming-IS-2026/tree/main/Week_12) |
 | 13 |  |  |
 | 14 |  |  |
 | 15 |  |  |
 
 ## 📚 Допълнителни материали
+
+[Минали контролни](https://github.com/Stelllarce/Object-Oriented-Programming-IS-2026/tree/main/Miscellaneous/Past_Exams)
 
 ### 🛠️ Инструменти (полезни, но не се изискват в този курс)
 
