@@ -28,6 +28,10 @@
   - [Полиморфизъм](#полиморфизъм)
     - [Какво е полиморфизъм](#какво-е-полиморфизъм)
     - [Работа с масив от указатели към базов клас](#работа-с-масив-от-указатели-към-базов-клас)
+  - [Прототипен шаблон – `clone()`](#прототипен-шаблон--clone)
+    - [Ковариантни типове на връщане](#ковариантни-типове-на-връщане)
+    - [Връщане на производен указател срещу базов](#връщане-на-производен-указател-срещу-базов)
+    - [Връзката с принципа на Лисков](#връзката-с-принципа-на-лисков)
   - [Задачи](#задачи)
 
 ---
@@ -392,7 +396,7 @@ public:
 };
 ```
 
-> **Правило:** Винаги пишете `override` при предефиниране. Без него можете да скриете метод по невнимание вместо да го предефинирате.
+> **Правило:** Винаги пишете `override` при предефиниране. Без него можете да  скриете метод по невнимание вместо да го предефинирате.
 
 ---
 
@@ -778,6 +782,164 @@ for (int i = 0; i < N; i++) {
 
 ---
 
+## Прототипен шаблон – `clone()`
+
+[Refactoring Guru](https://refactoring.guru/design-patterns/prototype)
+
+**Проблемът:** имате указател към базов клас и искате да направите точно копие на обекта зад него – без да знаете конкретния му тип.
+
+```cpp
+Shape* original = new Circle(5.0);
+
+// Wrong – copies only the Shape slice (object slicing):
+Shape copy = *original;
+
+// Wrong – we don't know the concrete type here:
+// Circle* c = new Circle(*original);   // can't do this through a Shape*
+```
+
+**Решението** е всеки клас да умее да копира себе си чрез виртуален метод `clone()`. Това е **Прототипният шаблон (Prototype Pattern)**:
+
+```cpp
+class Shape {
+public:
+    virtual Shape* clone() const = 0;   // each derived class returns a heap copy of itself
+    virtual double area() const = 0;
+    virtual ~Shape() = default;
+};
+
+class Circle : public Shape {
+    double radius;
+public:
+    Circle(double r) : radius(r) {}
+
+    Shape* clone() const override { return new Circle(*this); }
+    double area()  const override { return 3.14159 * radius * radius; }
+};
+
+class Rectangle : public Shape {
+    double w, h;
+public:
+    Rectangle(double w, double h) : w(w), h(h) {}
+
+    Shape* clone() const override { return new Rectangle(*this); }
+    double area()  const override { return w * h; }
+};
+```
+
+Сега можем да копираме обект без да знаем конкретния му тип:
+
+```cpp
+Shape* original = new Circle(5.0);
+Shape* copy     = original->clone();   // returns a new Circle, seen as Shape*
+
+// Both are independent heap objects – modifying one does not affect the other
+```
+
+---
+
+### Ковариантни типове на връщане
+
+C++ позволява специално изключение от правилото, че виртуален метод трябва да бъде предефиниран с **точно същия** тип на връщане. Ако базовият метод връща `Base*` (или `Base&`), производният може да върне `Derived*` (или `Derived&`), при условие, че `Derived` наследява `Base`. Тази функция се казва **ковариантен тип на връщане (covariant return type)**:
+
+```cpp
+class Shape {
+public:
+    virtual Shape* clone() const = 0;   // returns Shape*
+    virtual ~Shape() = default;
+};
+
+class Circle : public Shape {
+    double radius;
+public:
+    Circle(double r) : radius(r) {}
+
+    // Covariant return type: Circle* instead of Shape* – still a valid override
+    Circle* clone() const override { return new Circle(*this); }
+};
+```
+
+Компилаторът приема `Circle*` като валидно предефиниране на `Shape* clone()`, защото `Circle` е производен от `Shape` – т.е. `Circle*` е специализация на `Shape*`.
+
+---
+
+### Връщане на производен указател срещу базов
+
+Разликата е видима на мястото на извикване:
+
+```cpp
+// ---- Scenario A: clone() returns Shape* (base pointer) ----
+
+Shape* a = new Circle(5.0);
+Shape* copy_a = a->clone();   // type is Shape* – only Shape interface visible
+
+// To call Circle-specific method we must cast:
+Circle* c = dynamic_cast<Circle*>(copy_a);
+if (c) { /* circle-specific work */ }
+
+
+// ---- Scenario B: clone() returns Circle* (covariant/derived pointer) ----
+
+Circle original(5.0);
+Circle* copy_b = original.clone();   // type is Circle* – no cast needed!
+// copy_b->radius_times_two();       // can call Circle-specific methods directly
+```
+
+Когато извиквате `clone()` директно **върху производен тип** (не чрез базов указател), ковариантният тип позволява да получите обратно производния тип без никакво cast. Когато извиквате `clone()` чрез `Shape*`, компилаторът вижда само `Shape*` – ковариантността се "губи" в динамичния dispatch, но поведението е правилно.
+
+```cpp
+// Through a base pointer – you get Shape* back (base interface only):
+Shape* s = new Circle(5.0);
+Shape* cloned_s = s->clone();   // Shape*, not Circle*
+
+// Through a concrete type – you get Circle* back (full interface):
+Circle c(5.0);
+Circle* cloned_c = c.clone();   // Circle* directly, no cast
+```
+
+Обобщено:
+
+| Извикване чрез | Тип на резултата | Cast нужен? |
+|---|---|---|
+| `Shape*` или `Shape&` | `Shape*` | Да, ако трябват производни методи |
+| `Circle` или `Circle*` директно | `Circle*` | Не |
+
+---
+
+### Връзката с принципа на Лисков
+
+Ковариантните типове на връщане **са разрешени именно защото спазват LSP**.
+
+LSP изисква: навсякъде, където се очаква `Shape*`, може да се подаде `Circle*` без изненади – тъй като `Circle` е `Shape`. Следователно метод, обявен да връща `Shape*`, може безопасно да върне `Circle*` вместо това: извикващият код очаква `Shape*` и точно това получава (или нещо по-специфично, което е напълно съвместимо).
+
+```cpp
+// The caller expects Shape* – getting Circle* is fine, it IS-A Shape*
+Shape* result = some_shape->clone();   // always safe, LSP holds
+```
+
+**Обратното – контравариантен тип – би нарушило LSP** и затова не е разрешено в C++:
+
+```cpp
+class SpecialCircle : public Circle {
+public:
+    // COMPILE ERROR – Shape* is LESS derived than Circle*:
+    // returning a base pointer from an override of a method that returns a derived pointer
+    // would mean SpecialCircle::clone() can return something that is NOT a Circle,
+    // breaking every caller that expects a Circle* from a Circle's clone().
+    Shape* clone() const override { return new Circle(1.0); }
+};
+```
+
+Ако `SpecialCircle::clone()` можеше да върне `Shape*` вместо `Circle*`, кодът, който извиква `clone()` на `Circle*` и очаква `Circle*` обратно, би получил нещо несъвместимо. Това директно нарушава LSP.
+
+> **Правило за запомняне:**
+> - **Ковариантен тип** (по-производен при override) → разрешен → спазва LSP.
+> - **Контравариантен тип** (по-базов при override) → забранен → нарушава LSP.
+>
+> Ковариантните типове на връщане са C++ начинът да кажете: *"Аз правя всичко, което базовият клас обещава, и дори малко повече."*
+
+---
+
 ## Задачи
 
 **Задача 1 – Форми**
@@ -802,4 +964,148 @@ for (int i = 0; i < N; i++) {
 
 Използвайте йерархията от Задача 1. Създайте масив от `Shape*`, съдържащ смесица от `Circle`, `Rectangle` и `Triangle`. Напишете функция, която с `dynamic_cast` проверява дали всяка форма е `Circle`, и ако е – отпечатва допълнителна специфична информация (напр. диаметъра). За останалите форми печата само `describe()`.
 
+**Задача 5 – Симулатор на аудио верига**
+
+Имате задача да напишете симулатор на верига от звукови ефекти – като педалборда на китарист. Аудио сигнал (просто `float` стойност) минава последователно през поредица от ефекти, всеки от които го трансформира по свой начин. Един "логър" наблюдава какво се случва във веригата – някои логъри извеждат всяка стъпка, други мълчат и трупат статистика.
+
+**Контекст**
+
+Веригата съдържа различни ефекти: `Overdrive` (изкривяване), `Reverb` (ехо/зала), `Delay` (повторение) и `Chorus` (удебеляване на звука). Всеки ефект има параметри, описание и умее да обработи сигнал. `Overdrive`-ът е специален – освен стандартната си обработка, той може да бъде "увеличен" с метод `boost()`, който за следващото извикване на `apply` удвоява изкривяването. Този метод **не** съществува в базовия клас.
+
 ---
+
+**(а) Интерфейс `ISignalLogger`**
+
+Дефинирайте абстрактен клас `ISignalLogger` с:
+
+- Чисто виртуален метод `void log_stage(const char* effect_name, float input, float output)` – извиква се след всяка обработка от един ефект.
+- Чисто виртуален метод `void log_chain_result(float final_signal)` – извиква се веднъж, в края на цялата верига.
+- Виртуален деструктор.
+
+Имплементирайте две конкретни реализации:
+
+**`ConsoleSignalLogger`**
+- Няма състояние.
+- `log_stage` отпечатва на `std::cout` ред от вида `[effect_name] in=<input> -> out=<output>`.
+- `log_chain_result` отпечатва ред от вида `=> final = <final_signal>`.
+
+**`StatsSignalLogger`** – натрупва статистика, без да печата нищо по време на обработката.
+- Член-данни:
+  - `unsigned m_stage_count` – брой обработени стъпки.
+  - `unsigned m_chain_count` – брой завършени вериги.
+  - `float m_max_abs_output` – най-голямата абсолютна стойност на изходен сигнал, която е виждал.
+  - `float m_last_final` – резултат от последната верига.
+- `log_stage` увеличава `m_stage_count` и обновява `m_max_abs_output`, ако `|output|` е по-голямо от текущото.
+- `log_chain_result` записва `final_signal` в `m_last_final` и инкрементира `m_chain_count`.
+- Допълнителни public методи (които **не** са в интерфейса):
+  - `unsigned stage_count() const`
+  - `unsigned chain_count() const`
+  - `float max_abs_output() const`
+  - `float last_final() const`
+  - `void print_report() const` – отпечатва обобщение, използва се ръчно в `main`.
+
+*Целта на двата логъра е да покажат, че имплементации на един и същ интерфейс могат да правят коренно различни неща – единият извежда в реално време, другият мълчи и трупа данни за по-късно. И в двата случая `Pedalboard` ги използва по абсолютно еднакъв начин.*
+
+---
+
+**(б) Базов клас `Effect`**
+
+Дефинирайте абстрактен клас `Effect` с:
+
+- Чисто виртуален метод `float apply(float signal)` – обработва сигнала и връща резултата.
+- Чисто виртуален метод `const char* name() const` – връща името на ефекта (напр. `"Overdrive"`).
+- Чисто виртуален метод `void describe() const` – отпечатва на `std::cout` описание във формат: `<name>: <параметри и кратко обяснение>`.
+- Чисто виртуален метод `Effect* clone() const` – връща дълбоко копие на ефекта.
+- Виртуален деструктор.
+
+`Effect` няма член-данни.
+
+---
+
+**(в) Конкретни ефекти**
+
+Общи правила за всички наследници:
+- Конкретната математика на `apply` е по избор – важно е сигналът да се променя смислено според параметъра.
+- `clone()` връща указател към конкретния тип (ковариантен тип).
+- `describe()` отпечатва името и стойността на параметрите.
+
+**`Overdrive`**
+- Член-данни:
+  - `float m_drive` – колкото е по-висок, толкова по-изкривен е сигналът. Разумен диапазон: `1.0f`–`5.0f`.
+  - `bool m_boosted` – флаг, който показва, че следващото `apply` ще използва удвоено `drive`.
+- Конструктор: `Overdrive(float drive)`. Инициализира `m_boosted = false`.
+- `apply`: ако `m_boosted == true`, използва `2.0f * m_drive` за единичното извикване и нулира флага; иначе използва `m_drive`. Примерна формула: `output = std::tanh(drive * signal)`.
+- `void boost()`: задава `m_boosted = true`. Този метод **не** е в `Effect`.
+- `clone()` връща `Overdrive*`. Клонингът копира `m_drive`, но **не** копира `m_boosted` – новият ефект започва "небустнат".
+
+**`Reverb`**
+- Член-данни: `float m_room_size` – симулира различни размери зала. Разумен диапазон: `0.0f`–`1.0f`.
+- Конструктор: `Reverb(float room_size)`.
+- `apply`: смесва входния сигнал със симулирано ехо. Примерна формула: `output = signal * (1.0f - 0.3f * m_room_size) + 0.3f * m_room_size`.
+- `clone()` връща `Reverb*`.
+
+**`Delay`**
+- Член-данни:
+  - `float m_feedback` – каква част от сигнала се "забавя" обратно. Разумен диапазон: `0.0f`–`1.0f`.
+  - `float m_last_signal` – запазен сигнал от предишно извикване на `apply` (т.е. `Delay` пази вътрешно състояние между извикванията).
+- Конструктор: `Delay(float feedback)`. Инициализира `m_last_signal = 0.0f`.
+- `apply`: смесва текущия сигнал с предишния. Примерна формула: `output = signal + m_feedback * m_last_signal; m_last_signal = output;`.
+- `clone()` връща `Delay*`. Клонингът копира `m_feedback`, но `m_last_signal` започва от `0.0f` – помислете защо: преходното състояние не принадлежи на "идентичността" на ефекта.
+
+**`Chorus`**
+- Член-данни: `float m_depth` – дълбочина на ефекта. Разумен диапазон: `0.0f`–`1.0f`.
+- Конструктор: `Chorus(float depth)`.
+- `apply`: симулира леко "разтрепване" на сигнала. Примерна формула: `output = signal * (1.0f + m_depth * 0.5f)`.
+- `clone()` връща `Chorus*`.
+
+---
+
+**(г) Клас `Pedalboard`**
+
+Дефинирайте клас `Pedalboard`, който управлява веригата от ефекти.
+
+- Член-данни:
+  - `Effect* m_effects[8]` – фиксиран масив от указатели към ефекти.
+  - `int m_count` – текущ брой добавени ефекти.
+  - `ISignalLogger& m_logger` – препратка към логъра. Логърът **не** се притежава от `Pedalboard`.
+
+- Конструктор: `Pedalboard(ISignalLogger& logger)`. Инициализира `m_count = 0` и всички указатели в масива на `nullptr`. *(DIP – педалбордът зависи от абстракцията `ISignalLogger`, не от конкретен логър.)*
+
+- `void add(Effect* effect)` – добавя ефекта на позиция `m_count` и инкрементира `m_count`. При пълен масив изхвърля `std::runtime_error` (опишете го в коментар). С извикването на `add`, `Pedalboard` поема собствеността върху подадения указател.
+
+- `float process(float signal)` – прекарва сигнала последователно през всички ефекти:
+  - За всеки ефект `e` в масива: запомня входа в локална променлива, извиква `output = e->apply(signal)`, обновява `signal = output`, и извиква `m_logger.log_stage(e->name(), input, output)`.
+  - В края извиква `m_logger.log_chain_result(signal)` и връща крайния сигнал.
+
+- `Pedalboard* clone_chain() const`:
+  - Заделя нов `Pedalboard` със **същия** логър (споделя препратката).
+  - За всеки ефект в текущия масив извиква полиморфния `clone()` и добавя резултата в новия `Pedalboard` чрез `add`.
+  - Връща готовия клонинг. Извикващият е отговорен за изтриването му.
+
+- `void boost_overdrives()`:
+  - Обхожда масива.
+  - За всеки ефект прави `dynamic_cast<Overdrive*>` и, ако кастът върне ненулев указател, извиква `boost()` върху него.
+  - Това е **единственото** място, където `Pedalboard` се нуждае от знание за конкретен наследник на `Effect`. Помислете дали това е добър дизайн – какво биха казали принципите OCP и LSP за него?
+
+- Деструктор: изтрива всички `Effect*` в масива.
+
+- Класът трябва да е **некопируем**: забранете копи-конструктора и копи-присвояването с `= delete`. *(Защо? Защото обектът държи "сурови" указатели и реална собственост върху ефектите – автоматичното копиране би довело до двойно `delete`. Дълбоко клониране се прави експлицитно през `clone_chain`.)*
+
+---
+
+**(д) `main()` – наредете всичко**
+
+В `main`:
+
+1. Създайте `ConsoleSignalLogger console_logger`.
+2. Създайте `Pedalboard board(console_logger)`.
+3. Добавете в разумен ред: `Overdrive(2.0f)`, `Reverb(0.5f)`, `Delay(0.4f)`, `Chorus(0.3f)`. Всички ефекти заделете с `new`.
+4. Обходете веригата и извикайте `describe()` за всеки ефект **през базов указател** `Effect*` – за да се види работещият виртуален диспач.
+5. Обработете тестов сигнал `0.8f` чрез `board.process(0.8f)` и отпечатайте резултата.
+6. Клонирайте веригата: `Pedalboard* clone = board.clone_chain();`.
+7. Извикайте `clone->boost_overdrives()` върху клонинга и обработете същия сигнал `0.8f` отново. Резултатът трябва да се различава от стъпка 5 за този `apply`, в който `Overdrive`-ът е бил бустнат.
+8. Демонстрирайте втория логър:
+   - Създайте `StatsSignalLogger stats_logger`.
+   - Създайте трети `Pedalboard stats_board(stats_logger)` с няколко ефекта по ваш избор.
+   - Обработете няколко различни сигнала (напр. `0.2f`, `0.5f`, `0.9f`) – по време на обработката няма да има никакъв изход.
+   - В края извикайте `stats_logger.print_report()` и покажете натрупаната статистика.
