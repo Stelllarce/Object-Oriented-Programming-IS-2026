@@ -1,0 +1,15 @@
+Vtable for GameObject
+GameObject::_ZTV10GameObject: 6 entries
+0     (int (*)(...))0
+8     (int (*)(...))(& _ZTI10GameObject)
+16    (int (*)(...))GameObject::~GameObject
+24    (int (*)(...))GameObject::~GameObject
+32    (int (*)(...))GameObject::update
+40    (int (*)(...))GameObject::tag
+
+Class GameObject
+   size=24 align=8
+   base size=20 base align=8
+GameObject (0x0x793b18db3420) 0
+    vptr=((& GameObject::_ZTV10GameObject) + 16)
+

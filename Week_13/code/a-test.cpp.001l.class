@@ -1,0 +1,83 @@
+Class Vehicle
+   size=4 align=4
+   base size=4 base align=4
+Vehicle (0x0x7b5d8d1b3420) 0
+
+Vtable for Tank
+Tank::_ZTV4Tank: 3 entries
+0     8
+8     (int (*)(...))0
+16    (int (*)(...))(& _ZTI4Tank)
+
+VTT for Tank
+Tank::_ZTT4Tank: 1 entries
+0     ((& Tank::_ZTV4Tank) + 24)
+
+Class Tank
+   size=16 align=8
+   base size=8 base align=8
+Tank (0x0x7b5d8d00e208) 0 nearly-empty
+    vptridx=0 vptr=((& Tank::_ZTV4Tank) + 24)
+Vehicle (0x0x7b5d8d1b3480) 8 virtual
+      vbaseoffset=-24
+
+Vtable for Boat
+Boat::_ZTV4Boat: 3 entries
+0     8
+8     (int (*)(...))0
+16    (int (*)(...))(& _ZTI4Boat)
+
+VTT for Boat
+Boat::_ZTT4Boat: 1 entries
+0     ((& Boat::_ZTV4Boat) + 24)
+
+Class Boat
+   size=16 align=8
+   base size=8 base align=8
+Boat (0x0x7b5d8d00e270) 0 nearly-empty
+    vptridx=0 vptr=((& Boat::_ZTV4Boat) + 24)
+Vehicle (0x0x7b5d8d1b3600) 8 virtual
+      vbaseoffset=-24
+
+Vtable for Amphybian
+Amphybian::_ZTV9Amphybian: 6 entries
+0     16
+8     (int (*)(...))0
+16    (int (*)(...))(& _ZTI9Amphybian)
+24    8
+32    (int (*)(...))-8
+40    (int (*)(...))(& _ZTI9Amphybian)
+
+Construction vtable for Tank (0x0x7b5d8d00e2d8 instance) in Amphybian
+Amphybian::_ZTC9Amphybian0_4Tank: 3 entries
+0     16
+8     (int (*)(...))0
+16    (int (*)(...))(& _ZTI4Tank)
+
+Construction vtable for Boat (0x0x7b5d8d00e340 instance) in Amphybian
+Amphybian::_ZTC9Amphybian8_4Boat: 3 entries
+0     8
+8     (int (*)(...))0
+16    (int (*)(...))(& _ZTI4Boat)
+
+VTT for Amphybian
+Amphybian::_ZTT9Amphybian: 4 entries
+0     ((& Amphybian::_ZTV9Amphybian) + 24)
+8     ((& Amphybian::_ZTC9Amphybian0_4Tank) + 24)
+16    ((& Amphybian::_ZTC9Amphybian8_4Boat) + 24)
+24    ((& Amphybian::_ZTV9Amphybian) + 48)
+
+Class Amphybian
+   size=24 align=8
+   base size=16 base align=8
+Amphybian (0x0x7b5d8d1c9000) 0
+    vptridx=0 vptr=((& Amphybian::_ZTV9Amphybian) + 24)
+Tank (0x0x7b5d8d00e2d8) 0 nearly-empty
+      primary-for Amphybian (0x0x7b5d8d1c9000)
+      subvttidx=8
+Vehicle (0x0x7b5d8d1b3660) 16 virtual
+        vbaseoffset=-24
+Boat (0x0x7b5d8d00e340) 8 nearly-empty
+      subvttidx=16 vptridx=24 vptr=((& Amphybian::_ZTV9Amphybian) + 48)
+Vehicle (0x0x7b5d8d1b3660) alternative-path
+

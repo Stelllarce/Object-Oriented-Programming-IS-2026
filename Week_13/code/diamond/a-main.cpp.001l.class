@@ -1,0 +1,168 @@
+Vtable for GameObject
+GameObject::_ZTV10GameObject: 6 entries
+0     (int (*)(...))0
+8     (int (*)(...))(& _ZTI10GameObject)
+16    (int (*)(...))GameObject::~GameObject
+24    (int (*)(...))GameObject::~GameObject
+32    (int (*)(...))GameObject::update
+40    (int (*)(...))GameObject::tag
+
+Class GameObject
+   size=24 align=8
+   base size=20 base align=8
+GameObject (0x0x703ef1db3420) 0
+    vptr=((& GameObject::_ZTV10GameObject) + 16)
+
+Vtable for Actor
+Actor::_ZTV5Actor: 17 entries
+0     16
+8     (int (*)(...))0
+16    (int (*)(...))(& _ZTI5Actor)
+24    (int (*)(...))Actor::update
+32    (int (*)(...))Actor::tag
+40    (int (*)(...))Actor::move
+48    (int (*)(...))Actor::~Actor
+56    (int (*)(...))Actor::~Actor
+64    18446744073709551600
+72    18446744073709551600
+80    18446744073709551600
+88    (int (*)(...))-16
+96    (int (*)(...))(& _ZTI5Actor)
+104   (int (*)(...))Actor::_ZTv0_n24_N5ActorD1Ev
+112   (int (*)(...))Actor::_ZTv0_n24_N5ActorD0Ev
+120   (int (*)(...))Actor::_ZTv0_n32_N5Actor6updateEf
+128   (int (*)(...))Actor::_ZTv0_n40_NK5Actor3tagEv
+
+VTT for Actor
+Actor::_ZTT5Actor: 2 entries
+0     ((& Actor::_ZTV5Actor) + 24)
+8     ((& Actor::_ZTV5Actor) + 104)
+
+Class Actor
+   size=40 align=8
+   base size=16 base align=8
+Actor (0x0x703ef1c0e208) 0
+    vptridx=0 vptr=((& Actor::_ZTV5Actor) + 24)
+GameObject (0x0x703ef1db3540) 16 virtual
+      vptridx=8 vbaseoffset=-24 vptr=((& Actor::_ZTV5Actor) + 104)
+
+Vtable for Interactable
+Interactable::_ZTV12Interactable: 15 entries
+0     16
+8     (int (*)(...))0
+16    (int (*)(...))(& _ZTI12Interactable)
+24    (int (*)(...))Interactable::interact
+32    (int (*)(...))Interactable::~Interactable
+40    (int (*)(...))Interactable::~Interactable
+48    0
+56    0
+64    18446744073709551600
+72    (int (*)(...))-16
+80    (int (*)(...))(& _ZTI12Interactable)
+88    (int (*)(...))Interactable::_ZTv0_n24_N12InteractableD1Ev
+96    (int (*)(...))Interactable::_ZTv0_n24_N12InteractableD0Ev
+104   (int (*)(...))GameObject::update
+112   (int (*)(...))GameObject::tag
+
+VTT for Interactable
+Interactable::_ZTT12Interactable: 2 entries
+0     ((& Interactable::_ZTV12Interactable) + 24)
+8     ((& Interactable::_ZTV12Interactable) + 88)
+
+Class Interactable
+   size=40 align=8
+   base size=16 base align=8
+Interactable (0x0x703ef1c0e2d8) 0
+    vptridx=0 vptr=((& Interactable::_ZTV12Interactable) + 24)
+GameObject (0x0x703ef1db3660) 16 virtual
+      vptridx=8 vbaseoffset=-24 vptr=((& Interactable::_ZTV12Interactable) + 88)
+
+Vtable for Merchant
+Merchant::_ZTV8Merchant: 24 entries
+0     40
+8     (int (*)(...))0
+16    (int (*)(...))(& _ZTI8Merchant)
+24    (int (*)(...))Merchant::update
+32    (int (*)(...))Actor::tag
+40    (int (*)(...))Actor::move
+48    (int (*)(...))Merchant::~Merchant
+56    (int (*)(...))Merchant::~Merchant
+64    (int (*)(...))Merchant::interact
+72    24
+80    (int (*)(...))-16
+88    (int (*)(...))(& _ZTI8Merchant)
+96    (int (*)(...))Merchant::_ZThn16_N8Merchant8interactEv
+104   (int (*)(...))Merchant::_ZThn16_N8MerchantD1Ev
+112   (int (*)(...))Merchant::_ZThn16_N8MerchantD0Ev
+120   18446744073709551576
+128   18446744073709551576
+136   18446744073709551576
+144   (int (*)(...))-40
+152   (int (*)(...))(& _ZTI8Merchant)
+160   (int (*)(...))Merchant::_ZTv0_n24_N8MerchantD1Ev
+168   (int (*)(...))Merchant::_ZTv0_n24_N8MerchantD0Ev
+176   (int (*)(...))Merchant::_ZTv0_n32_N8Merchant6updateEf
+184   (int (*)(...))Actor::_ZTv0_n40_NK5Actor3tagEv
+
+Construction vtable for Actor (0x0x703ef1c0e3a8 instance) in Merchant
+Merchant::_ZTC8Merchant0_5Actor: 17 entries
+0     40
+8     (int (*)(...))0
+16    (int (*)(...))(& _ZTI5Actor)
+24    (int (*)(...))Actor::update
+32    (int (*)(...))Actor::tag
+40    (int (*)(...))Actor::move
+48    0
+56    0
+64    18446744073709551576
+72    18446744073709551576
+80    18446744073709551576
+88    (int (*)(...))-40
+96    (int (*)(...))(& _ZTI5Actor)
+104   0
+112   0
+120   (int (*)(...))Actor::_ZTv0_n32_N5Actor6updateEf
+128   (int (*)(...))Actor::_ZTv0_n40_NK5Actor3tagEv
+
+Construction vtable for Interactable (0x0x703ef1c0e410 instance) in Merchant
+Merchant::_ZTC8Merchant16_12Interactable: 15 entries
+0     24
+8     (int (*)(...))0
+16    (int (*)(...))(& _ZTI12Interactable)
+24    (int (*)(...))Interactable::interact
+32    0
+40    0
+48    0
+56    0
+64    18446744073709551592
+72    (int (*)(...))-24
+80    (int (*)(...))(& _ZTI12Interactable)
+88    0
+96    0
+104   (int (*)(...))GameObject::update
+112   (int (*)(...))GameObject::tag
+
+VTT for Merchant
+Merchant::_ZTT8Merchant: 7 entries
+0     ((& Merchant::_ZTV8Merchant) + 24)
+8     ((& Merchant::_ZTC8Merchant0_5Actor) + 24)
+16    ((& Merchant::_ZTC8Merchant0_5Actor) + 104)
+24    ((& Merchant::_ZTC8Merchant16_12Interactable) + 24)
+32    ((& Merchant::_ZTC8Merchant16_12Interactable) + 88)
+40    ((& Merchant::_ZTV8Merchant) + 160)
+48    ((& Merchant::_ZTV8Merchant) + 96)
+
+Class Merchant
+   size=64 align=8
+   base size=36 base align=8
+Merchant (0x0x703ef1dd7000) 0
+    vptridx=0 vptr=((& Merchant::_ZTV8Merchant) + 24)
+Actor (0x0x703ef1c0e3a8) 0
+      primary-for Merchant (0x0x703ef1dd7000)
+      subvttidx=8
+GameObject (0x0x703ef1db36c0) 40 virtual
+        vptridx=40 vbaseoffset=-24 vptr=((& Merchant::_ZTV8Merchant) + 160)
+Interactable (0x0x703ef1c0e410) 16
+      subvttidx=24 vptridx=48 vptr=((& Merchant::_ZTV8Merchant) + 96)
+GameObject (0x0x703ef1db36c0) alternative-path
+

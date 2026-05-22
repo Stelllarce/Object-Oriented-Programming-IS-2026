@@ -1,0 +1,46 @@
+Vtable for GameObject
+GameObject::_ZTV10GameObject: 6 entries
+0     (int (*)(...))0
+8     (int (*)(...))(& _ZTI10GameObject)
+16    (int (*)(...))GameObject::~GameObject
+24    (int (*)(...))GameObject::~GameObject
+32    (int (*)(...))GameObject::update
+40    (int (*)(...))GameObject::tag
+
+Class GameObject
+   size=24 align=8
+   base size=20 base align=8
+GameObject (0x0x7512d91b3420) 0
+    vptr=((& GameObject::_ZTV10GameObject) + 16)
+
+Vtable for Interactable
+Interactable::_ZTV12Interactable: 15 entries
+0     16
+8     (int (*)(...))0
+16    (int (*)(...))(& _ZTI12Interactable)
+24    (int (*)(...))Interactable::interact
+32    (int (*)(...))Interactable::~Interactable
+40    (int (*)(...))Interactable::~Interactable
+48    0
+56    0
+64    18446744073709551600
+72    (int (*)(...))-16
+80    (int (*)(...))(& _ZTI12Interactable)
+88    (int (*)(...))Interactable::_ZTv0_n24_N12InteractableD1Ev
+96    (int (*)(...))Interactable::_ZTv0_n24_N12InteractableD0Ev
+104   (int (*)(...))GameObject::update
+112   (int (*)(...))GameObject::tag
+
+VTT for Interactable
+Interactable::_ZTT12Interactable: 2 entries
+0     ((& Interactable::_ZTV12Interactable) + 24)
+8     ((& Interactable::_ZTV12Interactable) + 88)
+
+Class Interactable
+   size=40 align=8
+   base size=16 base align=8
+Interactable (0x0x7512d900e208) 0
+    vptridx=0 vptr=((& Interactable::_ZTV12Interactable) + 24)
+GameObject (0x0x7512d91b3540) 16 virtual
+      vptridx=8 vbaseoffset=-24 vptr=((& Interactable::_ZTV12Interactable) + 88)
+

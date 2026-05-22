@@ -1,0 +1,48 @@
+Vtable for GameObject
+GameObject::_ZTV10GameObject: 6 entries
+0     (int (*)(...))0
+8     (int (*)(...))(& _ZTI10GameObject)
+16    (int (*)(...))GameObject::~GameObject
+24    (int (*)(...))GameObject::~GameObject
+32    (int (*)(...))GameObject::update
+40    (int (*)(...))GameObject::tag
+
+Class GameObject
+   size=24 align=8
+   base size=20 base align=8
+GameObject (0x0x7b3b91bb3420) 0
+    vptr=((& GameObject::_ZTV10GameObject) + 16)
+
+Vtable for Actor
+Actor::_ZTV5Actor: 17 entries
+0     16
+8     (int (*)(...))0
+16    (int (*)(...))(& _ZTI5Actor)
+24    (int (*)(...))Actor::update
+32    (int (*)(...))Actor::tag
+40    (int (*)(...))Actor::move
+48    (int (*)(...))Actor::~Actor
+56    (int (*)(...))Actor::~Actor
+64    18446744073709551600
+72    18446744073709551600
+80    18446744073709551600
+88    (int (*)(...))-16
+96    (int (*)(...))(& _ZTI5Actor)
+104   (int (*)(...))Actor::_ZTv0_n24_N5ActorD1Ev
+112   (int (*)(...))Actor::_ZTv0_n24_N5ActorD0Ev
+120   (int (*)(...))Actor::_ZTv0_n32_N5Actor6updateEf
+128   (int (*)(...))Actor::_ZTv0_n40_NK5Actor3tagEv
+
+VTT for Actor
+Actor::_ZTT5Actor: 2 entries
+0     ((& Actor::_ZTV5Actor) + 24)
+8     ((& Actor::_ZTV5Actor) + 104)
+
+Class Actor
+   size=40 align=8
+   base size=16 base align=8
+Actor (0x0x7b3b91a0e208) 0
+    vptridx=0 vptr=((& Actor::_ZTV5Actor) + 24)
+GameObject (0x0x7b3b91bb3540) 16 virtual
+      vptridx=8 vbaseoffset=-24 vptr=((& Actor::_ZTV5Actor) + 104)
+
